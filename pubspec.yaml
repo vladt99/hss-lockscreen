@@ -1,4 +1,4 @@
-name: hss_lockscreen
+name: hss_lock_screen
 description: "A Flutter package that provides a conditional lock screen for web debug mode with secure authentication."
 version: 0.0.1
 homepage:
@@ -9,6 +9,8 @@ environment:
 
 dependencies:
   flutter:
+    sdk: flutter
+  flutter_localizations:
     sdk: flutter
   flutter_bloc: ^9.1.1
   flutter_secure_storage: ^9.2.4
