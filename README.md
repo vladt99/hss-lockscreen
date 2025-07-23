@@ -122,31 +122,3 @@ context.read<AuthCubit>().checkAuthStatus();
 2. **Secure Storage**: Uses platform-specific secure storage (Keychain on iOS, EncryptedSharedPreferences on Android)
 3. **Password in Code**: Remember that the password is stored in your source code, so use appropriate security measures
 4. **Web Only**: Only functions on web platform as intended
-
-## Development
-
-### Running Tests
-
-```bash
-flutter test
-```
-
-### Running the Example
-
-```bash
-cd example
-flutter run -d chrome
-```
-
-## Dependencies
-
-- `flutter_bloc: ^8.1.3` - State management
-- `flutter_secure_storage: ^9.0.0` - Secure storage for authentication timestamps
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
