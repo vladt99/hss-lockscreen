@@ -24,6 +24,9 @@ class HssLockScreen extends StatelessWidget {
   /// Optional custom accent color for the lock screen theme
   final Color? accentColor;
 
+  /// Optional flag to enable/disable the lock screen
+  final bool isEnabled;
+
   const HssLockScreen({
     super.key,
     required this.password,
@@ -31,12 +34,13 @@ class HssLockScreen extends StatelessWidget {
     this.backgroundColor,
     this.blurIntensity = 12.0,
     this.accentColor,
+    this.isEnabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
     // Only show lock screen on web in debug mode
-    if (!kIsWeb || !kDebugMode) {
+    if (!kIsWeb || !isEnabled) {
       return child;
     }
 

@@ -17,7 +17,7 @@ A Flutter package that provides a conditional lock screen widget for web applica
 
 ## Features
 
-- 🔒 **Conditional Lock Screen**: Only displays on web in debug mode (`kIsWeb && kDebugMode`)
+- 🔒 **Conditional Lock Screen**: Only displays on web in debug mode (`kIsWeb && isEnabled`)
 - 🔐 **Secure Authentication**: Uses `flutter_secure_storage` to remember authentication
 - ⏰ **Auto Expiry**: Authentication expires after 20 days maximum
 - 🎨 **Beautiful UI**: Blurred background with centered password input
@@ -78,7 +78,7 @@ class MyApp extends StatelessWidget {
 
 ### When Lock Screen is Shown
 - Platform: Web only (`kIsWeb` is true)
-- Mode: Debug mode only (`kDebugMode` is true)
+- Mode: Debug mode only (`isEnabled` is true)
 - Authentication: When no valid authentication exists or it has expired
 
 ### When Lock Screen is Hidden
