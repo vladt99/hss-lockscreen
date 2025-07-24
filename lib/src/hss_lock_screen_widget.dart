@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'auth_cubit.dart';
 
@@ -212,116 +211,95 @@ class _LockScreenOverlayState extends State<_LockScreenOverlay>
         ? (widget.authState as AuthUnauthenticated).errorMessage
         : null;
 
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: Localizations(
-        locale: const Locale('en', 'US'),
-        delegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-        ],
-        child: Overlay(
-          initialEntries: [
-            OverlayEntry(
-              builder: (context) => Material(
-                type: MaterialType.transparency,
-                child: Stack(
-                  children: [
-                    // Blurred background
-                    ImageFiltered(
-                      imageFilter: ImageFilter.blur(
-                        sigmaX: widget.blurIntensity,
-                        sigmaY: widget.blurIntensity,
-                      ),
-                      child: widget.child,
-                    ),
+    return Stack(
+      children: [
+        // Blurred background
+        ImageFiltered(
+          imageFilter: ImageFilter.blur(
+            sigmaX: widget.blurIntensity,
+            sigmaY: widget.blurIntensity,
+          ),
+          child: widget.child,
+        ),
 
-                    // Gradient overlay
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            widget.backgroundColor?.withValues(alpha: 0.3) ??
-                                Colors.black.withValues(alpha: 0.3),
-                            widget.backgroundColor?.withValues(alpha: 0.6) ??
-                                Colors.black.withValues(alpha: 0.6),
-                          ],
-                        ),
-                      ),
-                    ),
+        // Gradient overlay
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                widget.backgroundColor?.withValues(alpha: 0.3) ??
+                    Colors.black.withValues(alpha: 0.3),
+                widget.backgroundColor?.withValues(alpha: 0.6) ??
+                    Colors.black.withValues(alpha: 0.6),
+              ],
+            ),
+          ),
+        ),
 
-                    // Lock screen content
-                    Center(
-                      child: AnimatedBuilder(
-                        animation: _shakeAnimation,
-                        builder: (context, child) {
-                          return Transform.translate(
-                            offset: Offset(
-                              _shakeAnimation.value *
-                                  (_shakeController.value > 0.5 ? -1 : 1),
-                              0,
-                            ),
-                            child: child,
-                          );
-                        },
-                        child: Container(
-                          constraints: const BoxConstraints(maxWidth: 420),
-                          margin: const EdgeInsets.all(32),
-                          child: Card(
-                            elevation: 24,
-                            shadowColor: widget.accentColor.withValues(
-                              alpha: 0.3,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(24),
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    theme.cardColor,
-                                    theme.cardColor.withValues(alpha: 0.9),
-                                  ],
-                                ),
-                              ),
-                              padding: const EdgeInsets.all(40),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  _buildLockIcon(),
-                                  const SizedBox(height: 32),
-                                  _buildTitle(theme),
-                                  const SizedBox(height: 12),
-                                  _buildSubtitle(theme),
-                                  const SizedBox(height: 40),
-                                  _buildPasswordField(theme, isLoading),
-                                  if (errorMessage != null) ...[
-                                    const SizedBox(height: 16),
-                                    _buildErrorMessage(errorMessage, theme),
-                                  ],
-                                  const SizedBox(height: 32),
-                                  _buildLoginButton(theme, isLoading),
-                                  const SizedBox(height: 24),
-                                  _buildDebugInfo(theme),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+        // Lock screen content
+        Center(
+          child: AnimatedBuilder(
+            animation: _shakeAnimation,
+            builder: (context, child) {
+              return Transform.translate(
+                offset: Offset(
+                  _shakeAnimation.value *
+                      (_shakeController.value > 0.5 ? -1 : 1),
+                  0,
+                ),
+                child: child,
+              );
+            },
+            child: Container(
+              constraints: const BoxConstraints(maxWidth: 420),
+              margin: const EdgeInsets.all(32),
+              child: Card(
+                elevation: 24,
+                shadowColor: widget.accentColor.withValues(alpha: 0.3),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        theme.cardColor,
+                        theme.cardColor.withValues(alpha: 0.9),
+                      ],
                     ),
-                  ],
+                  ),
+                  padding: const EdgeInsets.all(40),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildLockIcon(),
+                      const SizedBox(height: 32),
+                      _buildTitle(theme),
+                      const SizedBox(height: 12),
+                      _buildSubtitle(theme),
+                      const SizedBox(height: 40),
+                      _buildPasswordField(theme, isLoading),
+                      if (errorMessage != null) ...[
+                        const SizedBox(height: 16),
+                        _buildErrorMessage(errorMessage, theme),
+                      ],
+                      const SizedBox(height: 32),
+                      _buildLoginButton(theme, isLoading),
+                      const SizedBox(height: 24),
+                      _buildDebugInfo(theme),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
