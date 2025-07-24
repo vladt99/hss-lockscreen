@@ -353,47 +353,55 @@ class _LockScreenOverlayState extends State<_LockScreenOverlay>
   }
 
   Widget _buildPasswordField(ThemeData theme, bool isLoading) {
-    return TextField(
-      controller: _passwordController,
-      focusNode: _passwordFocusNode,
-      obscureText: _obscurePassword,
-      enabled: !isLoading && !_isAuthenticating,
-      onSubmitted: (_) => _handleAuthentication(),
-      decoration: InputDecoration(
-        labelText: 'Password',
-        prefixIcon: Icon(Icons.key_rounded, color: widget.accentColor),
-        suffixIcon: IconButton(
-          icon: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
-            child: Icon(
-              _obscurePassword
-                  ? Icons.visibility_rounded
-                  : Icons.visibility_off_rounded,
-              key: ValueKey(_obscurePassword),
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-            ),
-          ),
-          onPressed: () {
-            setState(() {
-              _obscurePassword = !_obscurePassword;
-            });
+    return Overlay(
+      initialEntries: [
+        OverlayEntry(
+          builder: (context) {
+            return TextField(
+              controller: _passwordController,
+              focusNode: _passwordFocusNode,
+              obscureText: _obscurePassword,
+              enabled: !isLoading && !_isAuthenticating,
+              onSubmitted: (_) => _handleAuthentication(),
+              decoration: InputDecoration(
+                labelText: 'Password',
+                prefixIcon: Icon(Icons.key_rounded, color: widget.accentColor),
+                suffixIcon: IconButton(
+                  icon: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    child: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_rounded
+                          : Icons.visibility_off_rounded,
+                      key: ValueKey(_obscurePassword),
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                    ),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _obscurePassword = !_obscurePassword;
+                    });
+                  },
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide(color: theme.dividerColor),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide(color: widget.accentColor, width: 2),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide(color: theme.dividerColor),
+                ),
+                filled: true,
+                fillColor: theme.colorScheme.surface.withValues(alpha: 0.5),
+              ),
+            );
           },
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: theme.dividerColor),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: widget.accentColor, width: 2),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: theme.dividerColor),
-        ),
-        filled: true,
-        fillColor: theme.colorScheme.surface.withValues(alpha: 0.5),
-      ),
+      ],
     );
   }
 
