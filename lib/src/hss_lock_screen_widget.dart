@@ -211,92 +211,98 @@ class _LockScreenOverlayState extends State<_LockScreenOverlay>
         ? (widget.authState as AuthUnauthenticated).errorMessage
         : null;
 
-    return Stack(
-      children: [
-        // Blurred background
-        ImageFiltered(
-          imageFilter: ImageFilter.blur(
-            sigmaX: widget.blurIntensity,
-            sigmaY: widget.blurIntensity,
-          ),
-          child: widget.child,
-        ),
-
-        // Gradient overlay
-        Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                widget.backgroundColor?.withValues(alpha: 0.3) ??
-                    Colors.black.withValues(alpha: 0.3),
-                widget.backgroundColor?.withValues(alpha: 0.6) ??
-                    Colors.black.withValues(alpha: 0.6),
-              ],
-            ),
-          ),
-        ),
-
-        // Lock screen content
-        Center(
-          child: AnimatedBuilder(
-            animation: _shakeAnimation,
-            builder: (context, child) {
-              return Transform.translate(
-                offset: Offset(
-                  _shakeAnimation.value *
-                      (_shakeController.value > 0.5 ? -1 : 1),
-                  0,
+    return Overlay(
+      initialEntries: [
+        OverlayEntry(
+          builder: (context) => Stack(
+            children: [
+              // Blurred background
+              ImageFiltered(
+                imageFilter: ImageFilter.blur(
+                  sigmaX: widget.blurIntensity,
+                  sigmaY: widget.blurIntensity,
                 ),
-                child: child,
-              );
-            },
-            child: Container(
-              constraints: const BoxConstraints(maxWidth: 420),
-              margin: const EdgeInsets.all(32),
-              child: Card(
-                elevation: 24,
-                shadowColor: widget.accentColor.withValues(alpha: 0.3),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24),
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        theme.cardColor,
-                        theme.cardColor.withValues(alpha: 0.9),
-                      ],
-                    ),
-                  ),
-                  padding: const EdgeInsets.all(40),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _buildLockIcon(),
-                      const SizedBox(height: 32),
-                      _buildTitle(theme),
-                      const SizedBox(height: 12),
-                      _buildSubtitle(theme),
-                      const SizedBox(height: 40),
-                      _buildPasswordField(theme, isLoading),
-                      if (errorMessage != null) ...[
-                        const SizedBox(height: 16),
-                        _buildErrorMessage(errorMessage, theme),
-                      ],
-                      const SizedBox(height: 32),
-                      _buildLoginButton(theme, isLoading),
-                      const SizedBox(height: 24),
-                      _buildDebugInfo(theme),
+                child: widget.child,
+              ),
+
+              // Gradient overlay
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      widget.backgroundColor?.withValues(alpha: 0.3) ??
+                          Colors.black.withValues(alpha: 0.3),
+                      widget.backgroundColor?.withValues(alpha: 0.6) ??
+                          Colors.black.withValues(alpha: 0.6),
                     ],
                   ),
                 ),
               ),
-            ),
+
+              // Lock screen content
+              Center(
+                child: AnimatedBuilder(
+                  animation: _shakeAnimation,
+                  builder: (context, child) {
+                    return Transform.translate(
+                      offset: Offset(
+                        _shakeAnimation.value *
+                            (_shakeController.value > 0.5 ? -1 : 1),
+                        0,
+                      ),
+                      child: child,
+                    );
+                  },
+                  child: Container(
+                    constraints: const BoxConstraints(maxWidth: 420),
+                    margin: const EdgeInsets.all(32),
+                    child: Card(
+                      elevation: 24,
+                      shadowColor: widget.accentColor.withValues(alpha: 0.3),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              theme.cardColor,
+                              theme.cardColor.withValues(alpha: 0.9),
+                            ],
+                          ),
+                        ),
+                        padding: const EdgeInsets.all(40),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _buildLockIcon(),
+                            const SizedBox(height: 32),
+                            _buildTitle(theme),
+                            const SizedBox(height: 12),
+                            _buildSubtitle(theme),
+                            const SizedBox(height: 40),
+                            _buildPasswordField(theme, isLoading),
+                            if (errorMessage != null) ...[
+                              const SizedBox(height: 16),
+                              _buildErrorMessage(errorMessage, theme),
+                            ],
+                            const SizedBox(height: 32),
+                            _buildLoginButton(theme, isLoading),
+                            const SizedBox(height: 24),
+                            _buildDebugInfo(theme),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -353,55 +359,47 @@ class _LockScreenOverlayState extends State<_LockScreenOverlay>
   }
 
   Widget _buildPasswordField(ThemeData theme, bool isLoading) {
-    return Overlay(
-      initialEntries: [
-        OverlayEntry(
-          builder: (context) {
-            return TextField(
-              controller: _passwordController,
-              focusNode: _passwordFocusNode,
-              obscureText: _obscurePassword,
-              enabled: !isLoading && !_isAuthenticating,
-              onSubmitted: (_) => _handleAuthentication(),
-              decoration: InputDecoration(
-                labelText: 'Password',
-                prefixIcon: Icon(Icons.key_rounded, color: widget.accentColor),
-                suffixIcon: IconButton(
-                  icon: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 200),
-                    child: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_rounded
-                          : Icons.visibility_off_rounded,
-                      key: ValueKey(_obscurePassword),
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                    ),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _obscurePassword = !_obscurePassword;
-                    });
-                  },
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: theme.dividerColor),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: widget.accentColor, width: 2),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: theme.dividerColor),
-                ),
-                filled: true,
-                fillColor: theme.colorScheme.surface.withValues(alpha: 0.5),
-              ),
-            );
+    return TextField(
+      controller: _passwordController,
+      focusNode: _passwordFocusNode,
+      obscureText: _obscurePassword,
+      enabled: !isLoading && !_isAuthenticating,
+      onSubmitted: (_) => _handleAuthentication(),
+      decoration: InputDecoration(
+        labelText: 'Password',
+        prefixIcon: Icon(Icons.key_rounded, color: widget.accentColor),
+        suffixIcon: IconButton(
+          icon: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: Icon(
+              _obscurePassword
+                  ? Icons.visibility_rounded
+                  : Icons.visibility_off_rounded,
+              key: ValueKey(_obscurePassword),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
+          ),
+          onPressed: () {
+            setState(() {
+              _obscurePassword = !_obscurePassword;
+            });
           },
         ),
-      ],
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: theme.dividerColor),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: widget.accentColor, width: 2),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: theme.dividerColor),
+        ),
+        filled: true,
+        fillColor: theme.colorScheme.surface.withValues(alpha: 0.5),
+      ),
     );
   }
 
